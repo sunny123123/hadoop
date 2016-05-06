@@ -2,21 +2,36 @@ package com.sunny.hadooptest;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.StringTokenizer;
 
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.tools.GetConf;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mrunit.ReduceDriver;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.junit.Test;
 
-public class Process{
+/**
+ * 1.this class let we to execute like below
+ * 		hadoop com.sunny.hadooptest.Process2 -conf /BBBB/hadoop2.7.2/etc/hadoop/conf/hadoop-local.xml
+ * 2.we can assign xml configuration file
+ * 3.we must extends Configured implements Tool and override run function
+ * @author root
+ *
+ */
+public class Process2 extends Configured implements Tool{
 	public static class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable>{
 
 		@Override
@@ -48,19 +63,16 @@ public class Process{
 		}
 		
 	}
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-//		if(args.length!=2){
-//			System.out.println("ERROR");
-//			System.exit(-1);
-//		}
-		Job job = new Job();
-		job.setJarByClass(Process.class);
+	public static void main(String[] args) throws Exception{
+		ToolRunner.run(new Process2(), args);
+	}
+	
+	public int run(String[] arg0) throws Exception {
+		Job job = new Job(getConf());
+		job.setJarByClass(com.sunny.hadooptest.Process2.class);
 		job.setJobName("Max temperature");
-		
-		//FileInputFormat.addInputPath(job, new Path(args[0]));
-		//FileOutputFormat.setOutputPath(job, new Path(args[1]));		
-		
-		FileInputFormat.addInputPath(job, new Path("/"));
+		//((JobConf)job.getConfiguration()).setJar("a.jxr");
+		FileInputFormat.setInputPaths(job, new Path("/1901"),new Path("/1902"));
 		FileOutputFormat.setOutputPath(job, new Path("output"));	
 		job.setMapperClass(MyMapper.class);
 		job.setReducerClass(MyReduce.class);
@@ -68,7 +80,9 @@ public class Process{
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
 		job.waitForCompletion(true);
+		return 0;
 	}
+
 	/*unit test*/
 	@Test
 	public void testMapper(){
@@ -80,13 +94,13 @@ public class Process{
 		.runTest();
 	}
 	//@Test
-	public void testReducer(){
-		new ReduceDriver<Text,IntWritable,Text,IntWritable>()
-		//.withReducer(new MyReduce())
-		.withInputKey(new Text("1950"))
-		.withInputValues(Arrays.asList(new IntWritable(10),new IntWritable(5)))
-		.withOutput(new Text("1950"), new IntWritable(10))
-		.runTest();
-
-	}
+//	public void testReducer(){
+//		new ReduceDriver<Text,IntWritable,Text,IntWritable>()
+//		//.withReducer(new MyReduce())
+//		.withInputKey(new Text("1950"))
+//		.withInputValues(Arrays.asList(new IntWritable(10),new IntWritable(5)))
+//		.withOutput(new Text("1950"), new IntWritable(10))
+//		.runTest();
+//
+//	}
 }

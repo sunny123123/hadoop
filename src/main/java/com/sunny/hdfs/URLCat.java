@@ -17,6 +17,7 @@ public class URLCat {
 		try {
 			in = new URL("hdfs://localhost:9000/panzha.txt").openStream();
 			IOUtils.copyBytes(in, System.out, 4096,false);
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
