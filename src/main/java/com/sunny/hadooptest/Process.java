@@ -12,8 +12,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mrunit.ReduceDriver;
-import org.apache.hadoop.mrunit.mapreduce.MapDriver;
+//import org.apache.hadoop.mrunit.ReduceDriver;
+//import org.apache.hadoop.mrunit.mapreduce.MapDriver;
 import org.junit.Test;
 
 public class Process{
@@ -60,7 +60,7 @@ public class Process{
 		//FileInputFormat.addInputPath(job, new Path(args[0]));
 		//FileOutputFormat.setOutputPath(job, new Path(args[1]));		
 		
-		FileInputFormat.addInputPath(job, new Path("/"));
+		FileInputFormat.addInputPath(job, new Path("hdfs:///sample.txt"));
 		FileOutputFormat.setOutputPath(job, new Path("output"));	
 		job.setMapperClass(MyMapper.class);
 		job.setReducerClass(MyReduce.class);
@@ -70,7 +70,7 @@ public class Process{
 		job.waitForCompletion(true);
 	}
 	/*unit test*/
-	@Test
+	/*@Test
 	public void testMapper(){
 		Text value = new Text("0067011990999991950051507004+68750+023550FM-12+038299999V0203301N00671220001CN9999999N9+00001+99999999999");
 		new MapDriver<LongWritable, Text, Text, IntWritable>()
@@ -88,5 +88,5 @@ public class Process{
 		.withOutput(new Text("1950"), new IntWritable(10))
 		.runTest();
 
-	}
+	}*/
 }
