@@ -1,15 +1,18 @@
 package com.sunny.hdfs;
 
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
@@ -20,8 +23,35 @@ import org.apache.hadoop.util.Progressable;
  * */
 public class FileSystemCat {
 	public static void main(String[] args) throws Exception {
-		new FileSystemCat().WriteDataToHDFSByLocalFileSystem();
+		new FileSystemCat().test();
 	
+	}
+	public void test(){
+		String hdfsUri = "hdfs://10.124.22.213:9000";
+		FileSystem fs = null;
+		try {
+			fs = FileSystem.get(new URI(hdfsUri),new Configuration());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			FSDataInputStream input = fs.open(new Path("hdfs:///mars_tianchi_everysongs_statics.csv"));
+			BufferedReader bf = new BufferedReader(new InputStreamReader(input));
+			String line = null;
+			while((line=bf.readLine())!=null)
+			{
+				String[] datas = line.split(",");
+				String k = line.substring(0, line.indexOf(",")).trim();
+				String vc = line.substring(line.indexOf(",")+1);
+				String v = vc.substring(vc.indexOf(",")+1);
+				System.out.println(k+"####"+v);
+			}
+				
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public void useHDFSsystem() throws IOException, URISyntaxException{
 		String uri = "c";

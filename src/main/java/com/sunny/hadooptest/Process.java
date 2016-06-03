@@ -61,7 +61,7 @@ public class Process{
 		//FileOutputFormat.setOutputPath(job, new Path(args[1]));		
 		
 		FileInputFormat.addInputPath(job, new Path("hdfs:///sample.txt"));
-		FileOutputFormat.setOutputPath(job, new Path("output"));	
+		FileOutputFormat.setOutputPath(job, new Path("hdfs:///output"));	
 		job.setMapperClass(MyMapper.class);
 		job.setReducerClass(MyReduce.class);
 		
