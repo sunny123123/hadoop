@@ -81,6 +81,7 @@ public class Process6{
 						List<String> list_rs = new ArrayList<String>();
 						//int r1 = test(list_song);
 						//int r2 = test(list_singer);
+						//System.out.println("list song:"+list_song.size());
 						for(int j=0;j<list_song.size();j++){
 							int tmp = Integer.valueOf(list_singer.get(j))+Integer.valueOf(list_song.get(j));
 							
@@ -88,7 +89,9 @@ public class Process6{
 						}
 						//total_playNumber+=tmp;
 						map_every_singer_totalPlayNumbers.put(key.toString(), list_rs);
+						//System.out.println("list rs:"+list_rs.size());
 						list_rs = null;
+						
 					}else{
 						map_every_singer_totalPlayNumbers.put(key.toString(), map_every_song_playNumber.get(text.toString()));
 					}
@@ -129,7 +132,7 @@ public class Process6{
 				list_rs = null;
 			}
 			if(singer_datas!=null)
-				context.write(key, new Text(singer_datas));
+				context.write(key, new Text(","+singer_datas));
 		}
 		
 	}
@@ -181,12 +184,12 @@ public class Process6{
 		
 		Job job = new Job();
 		job.setJarByClass(Process6.class);
-		job.setJobName("Max date");
+		job.setJobName("songs_statistics");
 		
 		//FileInputFormat.addInputPath(job, new Path(args[0]));
 		//FileOutputFormat.setOutputPath(job, new Path(args[1]));		
 		
-		FileInputFormat.addInputPath(job, new Path("hdfs:///mars_tianchi_songs_taobao.csv"));
+		FileInputFormat.addInputPath(job, new Path("hdfs:///taobaoset/p2_mars_tianchi_songs.csv"));
 		FileOutputFormat.setOutputPath(job, new Path("hdfs:///output"));	
 		job.setMapperClass(MyMapper.class);
 		job.setReducerClass(MyReduce.class);
