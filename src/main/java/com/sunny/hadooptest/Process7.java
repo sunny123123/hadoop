@@ -38,7 +38,7 @@ public class Process7{
 			
 			String line = value.toString();
 			String[] linearr = line.split(",");
-			//if(linearr[3].equals("3")) //play
+			if(linearr[3].equals("1")) //play
 				context.write(new Text(linearr[1]), new Text(linearr[2]));
 			//if(linearr[3].equals("2")) //download
 			//	context.write(new Text(linearr[1]), new Text(linearr[2]));
