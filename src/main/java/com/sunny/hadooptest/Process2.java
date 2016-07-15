@@ -1,11 +1,15 @@
 package com.sunny.hadooptest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.tools.GetConf;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -68,12 +72,21 @@ public class Process2 extends Configured implements Tool{
 		ToolRunner.run(new Process2(), args);
 	}
 	
+	
 	public int run(String[] arg0) throws Exception {
 		Job job = new Job(getConf());
 		job.setJarByClass(com.sunny.hadooptest.Process2.class);
 		job.setJobName("Max temperature");
 		//((JobConf)job.getConfiguration()).setJar("a.jxr");
-		FileInputFormat.setInputPaths(job, new Path("/1901"),new Path("/1902"));
+		//FileInputFormat.setInputPaths(job, new Path("/1901"),new Path("/1902"));
+		Configuration conf = new Configuration();
+		conf.set("fs.default.name", "file:///");
+		FileSystem fs = FileSystem.get(conf);
+		if(fs.exists(new Path("output"))){
+			fs.delete(new Path("output"));
+		}
+		
+		FileInputFormat.setInputPaths(job, new Path("sample.txt"));
 		FileOutputFormat.setOutputPath(job, new Path("output"));	
 		job.setMapperClass(MyMapper.class);
 		job.setReducerClass(MyReduce.class);

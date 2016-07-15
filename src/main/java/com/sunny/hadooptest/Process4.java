@@ -3,12 +3,11 @@ package com.sunny.hadooptest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -18,7 +17,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 //import org.apache.hadoop.mrunit.ReduceDriver;
 //import org.apache.hadoop.mrunit.mapreduce.MapDriver;
-import org.junit.Test;
 
 /**
  * time from 20150301 to 20150830
@@ -101,8 +99,13 @@ public class Process4{
 		
 		//FileInputFormat.addInputPath(job, new Path(args[0]));
 		//FileOutputFormat.setOutputPath(job, new Path(args[1]));		
-		
-		FileInputFormat.addInputPath(job, new Path("hdfs:///mars_tianchi_user_actions_taobao.csv"));
+		Configuration conf = new Configuration();
+		conf.set("fs.default.name", "hdfs://10.124.22.213:9000");
+		FileSystem fs = FileSystem.get(conf);
+		if(fs.exists(new Path("/output"))){
+			fs.delete(new Path("/output"));
+		}
+		FileInputFormat.addInputPath(job, new Path("hdfs:///taobaoset/p2_mars_tianchi_user_actions.csv"));
 		FileOutputFormat.setOutputPath(job, new Path("hdfs:///output"));	
 		job.setMapperClass(MyMapper.class);
 		job.setReducerClass(MyReduce.class);

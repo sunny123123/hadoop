@@ -149,6 +149,7 @@ public class Process6{
 			FSDataInputStream input = null;
 			BufferedReader br = null;
 			try {
+				
 				input = fs.open(new Path("hdfs:///mars_tianchi_everysongs_statics.csv"));
 				 br = new BufferedReader(new InputStreamReader(input));
 				
